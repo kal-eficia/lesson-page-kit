@@ -75,6 +75,28 @@
     return Array.from({ length }, () => Math.floor(r() * options));
   }
 
+  const PINNED = /^\s*(all|none|both|neither)\b.*\b(above|these|them|of the options)\b|^\s*both [a-d] and [a-d]\s*$|^\s*[a-d] and [a-d]( only)?\s*$/i;
+  const pinnedSlots = (opts) => opts.map((o, i) => (typeof o === "string" && PINNED.test(o) ? i : -1)).filter((i) => i >= 0);
+  function planAllowed(allowed, options, r, strict = true) {
+    for (let attempt = 0; attempt < 300; attempt++) {
+      const key = [], counts = Array(options).fill(0);
+      let budget = 4000;
+      const place = (i) => {
+        if (i === allowed.length) return true;
+        if (--budget <= 0) return false;
+        const choices = shuffle([...allowed[i]], r).sort((a, b) => counts[a] - counts[b]);
+        for (const v of choices) {
+          key.push(v); counts[v]++;
+          if (!badTail(key, strict) && place(i + 1)) return true;
+          key.pop(); counts[v]--;
+        }
+        return false;
+      };
+      if (place(0)) return key;
+    }
+    return allowed.map((a) => a[Math.floor(r() * a.length)]);
+  }
+
   // ---------------------------------------------------------------- engine
   class Lesson {
     constructor(root, lesson) {
@@ -94,13 +116,29 @@
       const r = rng(hash(this.lesson.title + (this.lesson.seed || "")));
       const mcqs = this.lesson.pages.flatMap((p) => p.blocks.filter((b) => b.type === "mcq"));
       const width = Math.min(...mcqs.map((b) => b.options.length), 8);
-      const plan = mcqs.length ? planKey(mcqs.length, width, r) : [];
+      // Options such as "All of the above" keep their place; the key is planned around them.
+      const allowed = mcqs.map((b) => {
+        const pins = pinnedSlots(b.options);
+        if (pins.includes(b.answer)) return [b.answer];
+        const free = [...Array(width).keys()].filter((i) => !pins.includes(i));
+        return free.length ? free : [b.answer];
+      });
+      const plan = mcqs.length ? planAllowed(allowed, width, r) : [];
       mcqs.forEach((b, i) => {
-        const correct = b.options[b.answer];
-        const rest = shuffle(b.options.filter((_, j) => j !== b.answer), r);
-        rest.splice(plan[i], 0, correct);
-        b._options = rest;
-        b._answer = plan[i];
+        const pins = pinnedSlots(b.options);
+        const free = b.options.map((_, j) => j).filter((j) => !pins.includes(j));
+        const out = [...b.options];
+        if (pins.includes(b.answer)) {
+          const movers = shuffle(free.map((j) => b.options[j]), r);
+          free.forEach((slot, k) => { out[slot] = movers[k]; });
+          b._answer = b.answer;
+        } else {
+          const others = shuffle(free.filter((j) => j !== b.answer).map((j) => b.options[j]), r);
+          let k = 0;
+          free.forEach((slot) => { out[slot] = slot === plan[i] ? b.options[b.answer] : others[k++]; });
+          b._answer = plan[i];
+        }
+        b._options = out;
       });
       for (const p of this.lesson.pages) for (const b of p.blocks) {
         if (b.type !== "sort") continue;

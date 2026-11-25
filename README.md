@@ -24,7 +24,7 @@ I teach remote lessons to 11 to 18 year olds. The page students work on matters 
 - **A summary after every page.** Students copy it into the class chat page by page, so the teacher sees the work as it happens, not at the end.
 - **Confidence checks.** "Guessing / Think so / Certain" on any question. A confident wrong answer is the most useful thing a teacher can see.
 - **No self-marking.** Multiple choice and sort tasks give instant feedback. Written answers are captured for the teacher, never marked by the student.
-- **No answer patterns.** Options are reordered so the lesson's correct-answer key has no runs, staircases or alternation, the same rules as [pattern-guard](https://github.com/kal-eficia/pattern-guard). Sort items never cluster by bucket.
+- **No answer patterns.** Options are reordered so the lesson's correct-answer key has no runs, staircases or alternation, the same rules as [pattern-guard](https://github.com/kal-eficia/pattern-guard). Sort items never cluster by bucket. Options such as "All of the above" stay where you put them.
 - **Saves as they go.** Refresh or come back later and answers are still there.
 - **Ready for a live dashboard.** Every answer fires a `lesson:answer` event and can POST to your own endpoint.
 
