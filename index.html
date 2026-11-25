@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inside the CPU · lesson-page-kit demo</title>
+  <meta name="description" content="A demo student lesson page built with lesson-page-kit.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lesson-kit.css">
+</head>
+<body>
+  <div data-lesson="lesson-cpu"></div>
+
+  <script type="application/json" id="lesson-cpu">
+  {
+    "id": "demo-cpu-v1",
+    "subject": "Computer Science",
+    "title": "Inside the CPU",
+    "intro": "Three short pages on what the processor does and how it does it. Type your first name to start.",
+    "pages": [
+      {
+        "kicker": "Starter",
+        "title": "What do you already know?",
+        "intro": "Answer from memory. No notes. Getting one wrong now is how it sticks later.",
+        "blocks": [
+          { "type": "mcq", "id": "s1", "confidence": true, "q": "Which part of the CPU carries out calculations and comparisons?",
+            "options": ["The ALU", "The control unit", "The program counter", "Cache"], "answer": 0,
+            "why": "The **arithmetic logic unit** does the maths and the logic (comparisons like greater than)." },
+          { "type": "mcq", "id": "s2", "confidence": true, "q": "RAM is volatile. What does that mean?",
+            "options": ["It is very fast", "It loses its contents when the power goes off", "It can only be read, not written", "It is stored on the hard drive"], "answer": 1,
+            "why": "Volatile memory needs power to keep its data." },
+          { "type": "mcq", "id": "s3", "confidence": true, "q": "What does the program counter hold?",
+            "options": ["The result of the last calculation", "The number of programs running", "The address of the next instruction", "The clock speed"], "answer": 2 }
+        ]
+      },
+      {
+        "kicker": "Learn",
+        "title": "The fetch-decode-execute cycle",
+        "blocks": [
+          { "type": "text", "heading": "One instruction at a time",
+            "body": ["Every program is a list of instructions in memory. The CPU works through them in a loop called the **fetch-decode-execute cycle**.",
+                     "**Fetch:** the address in the program counter is copied to the MAR, and the instruction at that address comes back through the MDR. **Decode:** the control unit works out what the instruction means. **Execute:** the instruction is carried out, often by the ALU."] },
+          { "type": "note", "body": "**Exam tip:** name the register at each step. \"The address is copied from the PC to the MAR\" earns the mark. \"The CPU gets the instruction\" does not." },
+          { "type": "sort", "id": "l1", "prompt": "Sort each action into the stage where it happens.",
+            "buckets": ["Fetch", "Decode", "Execute"],
+            "items": [
+              { "text": "The address in the PC is copied to the MAR", "bucket": "Fetch" },
+              { "text": "The instruction arrives in the MDR", "bucket": "Fetch" },
+              { "text": "The control unit works out what the instruction means", "bucket": "Decode" },
+              { "text": "The ALU adds two numbers", "bucket": "Execute" },
+              { "text": "The result is stored in the accumulator", "bucket": "Execute" },
+              { "text": "The program counter goes up by one", "bucket": "Fetch" }
+            ] },
+          { "type": "mcq", "id": "l2", "q": "Where does an instruction go straight after it is fetched from memory?",
+            "options": ["The ALU", "The MDR", "The accumulator", "The hard drive"], "answer": 1 }
+        ]
+      },
+      {
+        "kicker": "Apply",
+        "title": "Explain it like an examiner wants",
+        "blocks": [
+          { "type": "mcq", "id": "a1", "q": "A CPU's clock speed goes from 2 GHz to 3 GHz. What is the most likely effect?",
+            "options": ["More instructions are processed each second", "The computer can store more files", "The screen gets sharper", "The CPU uses less power"], "answer": 0 },
+          { "type": "write", "id": "a2", "minWords": 30,
+            "prompt": "Describe what happens during the fetch stage of the cycle.",
+            "hint": "Use the words **program counter**, **MAR** and **MDR**. Aim for three clear steps." }
+        ]
+      }
+    ],
+    "outro": "That's the CPU done. Paste your last summary, then close this tab."
+  }
+  </script>
+  <script src="lesson-kit.js"></script>
+</body>
+</html>
